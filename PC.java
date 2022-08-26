@@ -20,32 +20,7 @@ class Result {
     static int[] finish;
 
     static int[] depend;
-
-    static List<List<Integer>> adj = new ArrayList<>();
     static List<List<Integer>> dependOn = new ArrayList<>();
-
-    private static void visit(int i, int curCost) {
-//        System.out.println("visit " + i + " " + curCost);
-        int newCost = curCost + cost[i];
-        if (finish[i] == INF) {
-            finish[i] = newCost;
-        } else {
-            finish[i] = Math.max(finish[i], newCost);
-        }
-
-        for (int nxt: adj.get(i)) {
-            int nxtCost = finish[i] + cost[nxt];
-            if (finish[nxt] == INF) {
-                visit(nxt, finish[i]);
-            } else {
-                visit(nxt, finish[i]);
-//                if (nxtCost > finish[i])  {
-//                    finish[i] = nxtCost;
-//                }
-            }
-        }
-//        System.out.println("finish " + i + " " + finish[i]);
-    }
 
     static int findTime(int v) {
         if (finish[v] != INF) {
@@ -62,28 +37,19 @@ class Result {
     }
 
     public static int calculateTime(int n, int k, List<Integer> taskTimeCosts, List<List<Integer>> edges) {
-//        System.out.println(n + " " + k);
-        // Write your code here
         cost = new int[n];
         finish = new int[n];
         depend = new int[n];
         for (int i = 0; i < n; ++i) {
             cost[i] = taskTimeCosts.get(i);
             finish[i] = INF;
-            adj.add(new ArrayList<Integer>());
             dependOn.add(new ArrayList<Integer>());
         }
 
         for (List<Integer> e: edges) {
-            int a = e.get(0), b = e.get(1);
-
-            --a;
-            --b;
-            adj.get(b).add(a);
+            int a = e.get(0) - 1, b = e.get(1) - 1;
             dependOn.get(a).add(b);
-//            System.out.println(b + " -> " + a);
         }
-
 
         int res = -1;
         for (int i = 0; i < n; ++i) {
